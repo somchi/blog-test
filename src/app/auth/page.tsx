@@ -6,7 +6,7 @@ export default async function Login(props: {
 }) {
   const searchParams = await props.searchParams;
   const mode = searchParams.mode;
-  console.log(mode);
+
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md pt-10">

@@ -1,0 +1,7 @@
+'use server';
+
+import { revalidateTag } from 'next/cache';
+
+export const clearCache = async () => {
+  revalidateTag('posts', 'max');
+};
