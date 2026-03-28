@@ -1,4 +1,4 @@
-import { cacheTag, revalidateTag } from 'next/cache';
+import { cacheTag } from 'next/cache';
 import { Post, PostComment, ResponseSchema } from '../types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
