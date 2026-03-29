@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import ThemeToggle from './themeToggle';
 import { logUserOut } from '../_libs/utils';
 import { useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
