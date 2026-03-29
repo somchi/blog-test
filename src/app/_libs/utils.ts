@@ -37,3 +37,11 @@ export const formatPost = (data: Post[], page: number, search?: string) => {
   }
   return paginatedData;
 };
+
+export const authUser = () => {
+  localStorage.setItem('isLoggedin', 'true');
+};
+
+export const logUserOut = () => {
+  localStorage.removeItem('isLoggedin');
+};

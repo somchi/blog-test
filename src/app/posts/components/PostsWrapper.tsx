@@ -18,7 +18,7 @@ export const PostWrapper = async ({ searchParams }: Props) => {
 
   const paginatedData = formatPost(data, parsed, search);
 
-  const nextPage = hasNextPage(paginatedData, parsed);
+  const nextPage = hasNextPage(search ? paginatedData : data, parsed);
 
   return (
     <div>
