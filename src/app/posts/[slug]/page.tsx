@@ -1,23 +1,11 @@
-import { getPost, getPostComments } from '@/app/_libs/services/posts';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { CommentCard } from '../components/CommentCard';
+import { PostCard } from '../components/PostCard';
+import { Suspense } from 'react';
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { searchParams: Promise<{ slug: string }> };
 
 export default async function PostPage(props: Props) {
-  const { slug } = await props.params;
-
-  const [postRes, commentRes] = await Promise.all([
-    getPost(slug),
-    getPostComments(slug),
-  ]);
-
-  const post = postRes.data;
-  const comments = commentRes.data;
-  if (!post.id) notFound();
-
-  // const paragraphs = post.content.split('\n\n');
+  const searchParams = props.searchParams.then((sp) => sp);
 
   return (
     <article className="min-h-screen flex flex-col bg-white dark:bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -29,21 +17,9 @@ export default async function PostPage(props: Props) {
           <span aria-hidden>←</span> All posts
         </Link>
 
-        <header className="mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
-            {post.title}
-          </h1>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-            {post.body}
-          </p>
-        </header>
-
-        <div className="text-base sm:text-lg">
-          <h2 className="font-semibold">Comments</h2>
-          {comments.map((comment, ind) => (
-            <CommentCard key={ind} comment={comment} />
-          ))}
-        </div>
+        <Suspense fallback={<p>...Loading</p>}>
+          <PostCard searchParams={searchParams} />
+        </Suspense>
       </div>
     </article>
   );
