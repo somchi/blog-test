@@ -8,7 +8,9 @@ import { useState } from 'react';
 import { Mode } from '@/app/_libs/enums';
 import { AuthData } from '@/app/_libs/types';
 import { useRouter } from 'next/navigation';
-import { LOGIN } from '@/site-settings/navigations';
+import { LOGIN, POSTS } from '@/site-settings/navigations';
+import { authUser } from '@/app/_libs/utils';
+import { ErrorState } from '@/app/_components/errorState';
 
 export const AuthForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -23,7 +25,97 @@ export const AuthForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
-  const handleSubmit = () => {};
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    }
+
+    if (mode === 'signup') {
+      if (!formData.confirmPassword) {
+        newErrors.confirmPassword = 'Please confirm your password';
+      } else if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
+      if (!formData.agreeToTerms) {
+        newErrors.agreeToTerms = 'You must agree to the terms';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleLogin = () => {
+    const users = localStorage.getItem('users');
+    if (users) {
+      const formatUsers: AuthData[] = JSON.parse(users);
+      const user = formatUsers.filter(
+        (item) =>
+          item.email === formData.email && item.password === formData.password
+      );
+      if (!user) {
+        throw new Error('Invalid user credentials');
+      }
+      authUser();
+    } else {
+      throw new Error('User not found');
+    }
+  };
+
+  const handleSignup = () => {
+    const users = localStorage.getItem('users');
+    if (users) {
+      const formatUsers: AuthData[] = JSON.parse(users);
+      const user = formatUsers.filter(
+        (item) =>
+          item.email === formData.email && item.password === formData.password
+      );
+      if (user.length > 0) {
+        throw new Error('User already exist');
+      } else {
+        localStorage.setItem(
+          'users',
+          JSON.stringify([...formatUsers, formData])
+        );
+        authUser();
+      }
+    } else {
+      localStorage.setItem('users', JSON.stringify([formData]));
+      authUser();
+    }
+  };
+
+  const handleSubmit = (e: React.SubmitEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    setErrors({});
+    try {
+      if (mode === 'login') {
+        handleLogin();
+        setIsLoading(false);
+      } else {
+        handleSignup();
+        setIsLoading(false);
+      }
+      router.replace(POSTS.href);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      const err = error as Error;
+      setErrors({ message: err.message });
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -51,6 +143,7 @@ export const AuthForm = () => {
         onSubmit={handleSubmit}
         className="bg-slate-900 rounded-xl border border-slate-800 p-8 shadow-2xl space-y-6"
       >
+        {errors.message && <ErrorState message={errors.message} />}
         {/* Email Field */}
         <div>
           <label
