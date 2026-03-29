@@ -108,9 +108,8 @@ export const AuthForm = () => {
         handleSignup();
         setIsLoading(false);
       }
-      router.replace(POSTS.href);
+      router.push(POSTS.href);
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
       const err = error as Error;
       setErrors({ message: err.message });
