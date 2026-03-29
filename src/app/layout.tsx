@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { NavHeader } from './_components/navHeader';
 import { Suspense } from 'react';
+import ThemeToggle from './_components/themeToggle';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,9 +31,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white dark:bg-black text-black dark:text-white">
-        <Suspense>
-          <NavHeader />
-        </Suspense>
+        <header className="dark:bg-gradient-to-bl from-slate-950 via-slate-900 to-slate-950 border-b border-slate-200/80 dark:border-slate-800/80 p-4 flex items-center justify-end gap-4">
+          <div className="grid md:flex gap-2">
+            <ThemeToggle />
+          </div>
+        </header>
 
         {children}
       </body>
