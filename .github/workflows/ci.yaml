@@ -32,8 +32,3 @@ jobs:
 
       - name: Deploy Project to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-
-
-prj_8sq5VEE3qY3bGqRh9t0iemIA3OQA
-team_6qEgoE68WPIivmiZc7f3HK0P
