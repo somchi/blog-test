@@ -12,7 +12,7 @@ jest.mock('next/navigation', () => ({
 describe('Test auth component', () => {
   test('Test signin for is first vibile', () => {
     render(<AuthForm />);
-    const signin = screen.getByText('Forgot passwor');
+    const signin = screen.getByText('Forgot password?');
     expect(signin).toBeInTheDocument();
   });
 
